@@ -46,7 +46,7 @@ MIDDLEWARE = [
 
 # ─── URLs y WSGI ──────────────────────────────────────────────────────────────
 ROOT_URLCONF = "gimnasio.urls"
-WSGI_APPLICATION = "gimnasio.wsgi.application"
+WSGI_APPLICATION = "gimnasio.wsgi.app"
 
 
 # ─── Templates ────────────────────────────────────────────────────────────────
