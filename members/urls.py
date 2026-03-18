@@ -5,4 +5,5 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("pago/<int:cliente_id>/", views.registrar_pago, name="registrar_pago"),
     path("cliente/nuevo/", views.nuevo_cliente, name="nuevo_cliente"),
+    path("plan/crear/", views.crear_plan, name="crear_plan"),
 ]

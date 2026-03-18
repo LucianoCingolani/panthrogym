@@ -54,3 +54,12 @@ def nuevo_cliente(request):
         return redirect("dashboard")
 
     return render(request, "nuevo_cliente.html", {"planes": planes})
+
+def crear_plan(request):
+    if request.method == "POST":
+        Plan.objects.create(
+            nombre=request.POST["nombre"],
+            precio=request.POST["precio"],
+            duracion_dias=request.POST.get("duracion_dias", 30),
+        )
+    return redirect(request.POST.get("next", "dashboard"))
