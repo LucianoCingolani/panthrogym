@@ -1,1 +1,1 @@
-web: gunicorn gimansio.wsgi
+web: gunicorn gimnasio.wsgi
