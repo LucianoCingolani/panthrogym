@@ -1,1 +1,1 @@
-web: gunicorn gimnasio.wsgi
+web: python manage.py collectstatic && gunicorn gimnasio.wsgi
