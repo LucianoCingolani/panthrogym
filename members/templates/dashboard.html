@@ -45,7 +45,7 @@
         <tbody class="divide-y divide-gray-100">
             {% for cliente in clientes %}
             <tr class="hover:bg-[#f7f6f1] transition">
-                <td class="px-5 py-3 font-semibold text-[#111]">{{ cliente.nombre }}</td>
+                <td class="px-5 py-3 font-semibold text-[#111]"><a href="{% url 'historial_pagos' cliente.id %}" class="hover:text-[#555] transition">{{ cliente.nombre }}</a></td>
                 <td class="px-5 py-3 text-gray-500">{{ cliente.plan.nombre }}</td>
                 <td class="px-5 py-3 text-gray-500">
                     {% if cliente.vencimiento %}
@@ -64,10 +64,16 @@
                     {% endif %}
                 </td>
                 <td class="px-5 py-3 text-right">
-                    <a href="{% url 'registrar_pago' cliente.id %}"
-                       class="bg-[#111] text-[#d4f04a] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-[#2a2a2a] transition">
-                        Cobrar
-                    </a>
+                    <div class="flex justify-end gap-2">
+                        <a href="{% url 'editar_cliente' cliente.id %}"
+                           class="border border-gray-300 text-gray-500 text-xs font-bold uppercase tracking-widest px-3 py-2 rounded hover:bg-gray-100 transition">
+                            Editar
+                        </a>
+                        <a href="{% url 'registrar_pago' cliente.id %}"
+                           class="bg-[#111] text-[#d4f04a] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-[#2a2a2a] transition">
+                            Cobrar
+                        </a>
+                    </div>
                 </td>
             </tr>
             {% empty %}

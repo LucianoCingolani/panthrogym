@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Reportes — GimPro{% endblock %}
+
+{% block content %}
+
+<div class="flex items-center justify-between mb-6">
+    <h1 class="font-condensed text-4xl font-bold uppercase text-[#111]">Reportes</h1>
+
+    <!-- Selector de mes -->
+    <form method="get" class="flex items-center gap-2">
+        <select name="mes"
+                class="border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+            <option value="1"  {% if mes == 1  %}selected{% endif %}>Enero</option>
+            <option value="2"  {% if mes == 2  %}selected{% endif %}>Febrero</option>
+            <option value="3"  {% if mes == 3  %}selected{% endif %}>Marzo</option>
+            <option value="4"  {% if mes == 4  %}selected{% endif %}>Abril</option>
+            <option value="5"  {% if mes == 5  %}selected{% endif %}>Mayo</option>
+            <option value="6"  {% if mes == 6  %}selected{% endif %}>Junio</option>
+            <option value="7"  {% if mes == 7  %}selected{% endif %}>Julio</option>
+            <option value="8"  {% if mes == 8  %}selected{% endif %}>Agosto</option>
+            <option value="9"  {% if mes == 9  %}selected{% endif %}>Septiembre</option>
+            <option value="10" {% if mes == 10 %}selected{% endif %}>Octubre</option>
+            <option value="11" {% if mes == 11 %}selected{% endif %}>Noviembre</option>
+            <option value="12" {% if mes == 12 %}selected{% endif %}>Diciembre</option>
+        </select>
+        <input type="number" name="anio" value="{{ anio }}" min="2020" max="2099"
+               class="border border-gray-200 rounded px-3 py-2 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+        <button type="submit"
+                class="bg-[#111] text-[#d4f04a] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-[#2a2a2a] transition">
+            Ver
+        </button>
+    </form>
+</div>
+
+<!-- Tarjetas resumen -->
+<div class="grid grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-lg p-5 border-l-4 border-[#d4f04a]">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Recaudado</p>
+        <p class="font-condensed text-5xl font-bold text-[#111]">${{ total_recaudado }}</p>
+    </div>
+    <div class="bg-white rounded-lg p-5 border-l-4 border-gray-300">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Pagos registrados</p>
+        <p class="font-condensed text-5xl font-bold text-[#111]">{{ pagos_mes.count }}</p>
+    </div>
+    <div class="bg-white rounded-lg p-5 border-l-4 border-red-400">
+        <p class="text-xs font-bold uppercase tracking-widest text-red-400 mb-1">No renovaron</p>
+        <p class="font-condensed text-5xl font-bold text-red-500">{{ no_renovaron|length }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-2 gap-6">
+
+    <!-- Pagos del mes -->
+    <div>
+        <h2 class="font-condensed text-xl font-bold uppercase text-[#111] mb-3">Pagos del mes</h2>
+        <div class="bg-white rounded-lg overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-[#111] text-white">
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest">Cliente</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest">Fecha</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest">Monto</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for pago in pagos_mes %}
+                    <tr class="hover:bg-[#f7f6f1] transition">
+                        <td class="px-4 py-3 font-semibold text-[#111]">{{ pago.cliente.nombre }}</td>
+                        <td class="px-4 py-3 text-gray-500">{{ pago.fecha_pago|date:"d/m" }}</td>
+                        <td class="px-4 py-3 font-condensed font-bold">${{ pago.monto }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-4 py-8 text-center text-gray-400 uppercase tracking-widest text-xs">
+                            Sin pagos este mes
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- No renovaron -->
+    <div>
+        <h2 class="font-condensed text-xl font-bold uppercase text-[#111] mb-3">No renovaron</h2>
+        <div class="bg-white rounded-lg overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-[#111] text-white">
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest">Cliente</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest">Plan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for cliente in no_renovaron %}
+                    <tr class="hover:bg-[#f7f6f1] transition">
+                        <td class="px-4 py-3 font-semibold text-[#111]">
+                            <a href="{% url 'historial_pagos' cliente.id %}" class="hover:text-[#555] transition">
+                                {{ cliente.nombre }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-3 text-gray-500">{{ cliente.plan.nombre }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="px-4 py-8 text-center text-gray-400 uppercase tracking-widest text-xs">
+                            Todos renovaron 💪
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

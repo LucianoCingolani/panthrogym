@@ -17,7 +17,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "cambia-esto-antes-de-subir-a-producci
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["localhost", "panthrogym-production.up.railway.app"]
+ALLOWED_HOSTS = ["localhost", "panthrogym-production.up.railway.app", "127.0.0.1"]
 
 # ─── Aplicaciones ─────────────────────────────────────────────────────────────
 INSTALLED_APPS = [

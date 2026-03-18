@@ -17,7 +17,10 @@
         <a href="{% url 'dashboard' %}" class="font-condensed text-xl font-bold uppercase text-white tracking-widest">
             Panthro<span class="text-[#d4f04a]">GYM</span>
         </a>
-        <div class="flex items-center gap-5">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'reportes' %}" class="text-gray-400 text-xs uppercase tracking-widest hover:text-white transition">
+                Reportes
+            </a>
             <button onclick="document.getElementById('modal-plan').classList.remove('hidden')"
                     class="text-gray-400 text-xs uppercase tracking-widest hover:text-white transition">
                 + Nuevo plan
@@ -36,6 +39,7 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Modal: Nuevo plan -->
     <div id="modal-plan" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50"
          onclick="if(event.target===this) this.classList.add('hidden')">
         <div class="bg-white rounded-lg w-full max-w-sm mx-4 overflow-hidden">
@@ -47,25 +51,25 @@
             <form method="post" action="{% url 'crear_plan' %}" class="px-5 py-5 flex flex-col gap-4">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ request.path }}">
- 
+
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Nombre del plan *</label>
                     <input type="text" name="nombre" required placeholder="Ej: Mensual full"
                            class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
                 </div>
- 
+
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Precio *</label>
                     <input type="number" name="precio" required min="0" step="0.01" placeholder="0.00"
                            class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
                 </div>
- 
+
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Duración (días)</label>
                     <input type="number" name="duracion_dias" value="30" min="1"
                            class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
                 </div>
- 
+
                 <button type="submit"
                         class="bg-[#d4f04a] text-[#111] font-bold uppercase tracking-widest py-3 rounded hover:bg-[#c2e038] transition text-sm mt-1">
                     Guardar plan
