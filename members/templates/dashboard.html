@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+ 
+<h1 class="font-condensed text-4xl font-bold uppercase text-[#111] mb-6">Estado del gimnasio</h1>
+ 
+<!-- Tarjetas resumen -->
+<div class="grid grid-cols-4 gap-4 mb-8">
+ 
+    <div class="bg-white rounded-lg p-5 border-l-4 border-gray-300">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Total</p>
+        <p class="font-condensed text-5xl font-bold text-[#111]">{{ resumen.total }}</p>
+    </div>
+ 
+    <div class="bg-white rounded-lg p-5 border-l-4 border-red-500">
+        <p class="text-xs font-bold uppercase tracking-widest text-red-400 mb-1">Vencidos</p>
+        <p class="font-condensed text-5xl font-bold text-red-600">{{ resumen.vencidos }}</p>
+    </div>
+ 
+    <div class="bg-white rounded-lg p-5 border-l-4 border-yellow-400">
+        <p class="text-xs font-bold uppercase tracking-widest text-yellow-500 mb-1">Por vencer</p>
+        <p class="font-condensed text-5xl font-bold text-yellow-500">{{ resumen.por_vencer }}</p>
+    </div>
+ 
+    <div class="bg-white rounded-lg p-5 border-l-4 border-green-500">
+        <p class="text-xs font-bold uppercase tracking-widest text-green-500 mb-1">Al día</p>
+        <p class="font-condensed text-5xl font-bold text-green-600">{{ resumen.al_dia }}</p>
+    </div>
+ 
+</div>
+ 
+<!-- Tabla -->
+<div class="bg-white rounded-lg overflow-hidden">
+    <table class="w-full text-sm">
+        <thead>
+            <tr class="bg-[#111] text-white">
+                <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-widest">Cliente</th>
+                <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-widest">Plan</th>
+                <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-widest">Vencimiento</th>
+                <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-widest">Estado</th>
+                <th class="px-5 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for cliente in clientes %}
+            <tr class="hover:bg-[#f7f6f1] transition">
+                <td class="px-5 py-3 font-semibold text-[#111]">{{ cliente.nombre }}</td>
+                <td class="px-5 py-3 text-gray-500">{{ cliente.plan.nombre }}</td>
+                <td class="px-5 py-3 text-gray-500">
+                    {% if cliente.vencimiento %}
+                        {{ cliente.vencimiento|date:"d/m/Y" }}
+                    {% else %}—{% endif %}
+                </td>
+                <td class="px-5 py-3">
+                    {% if cliente.estado == "vencido" %}
+                        <span class="bg-red-100 text-red-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">Vencido</span>
+                    {% elif cliente.estado == "por_vencer" %}
+                        <span class="bg-yellow-100 text-yellow-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">Por vencer</span>
+                    {% elif cliente.estado == "al_dia" %}
+                        <span class="bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">Al día</span>
+                    {% else %}
+                        <span class="bg-gray-100 text-gray-500 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">Sin pago</span>
+                    {% endif %}
+                </td>
+                <td class="px-5 py-3 text-right">
+                    <a href="{% url 'registrar_pago' cliente.id %}"
+                       class="bg-[#111] text-[#d4f04a] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-[#2a2a2a] transition">
+                        Cobrar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="px-5 py-10 text-center text-gray-400 uppercase tracking-widest text-xs">
+                    No hay clientes aún
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+ 
+{% endblock %}

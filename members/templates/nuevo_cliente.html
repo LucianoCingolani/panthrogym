@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Nuevo cliente{% endblock %}
+
+{% block content %}
+ 
+<div class="max-w-sm mx-auto">
+    <h1 class="font-condensed text-4xl font-bold uppercase text-[#111] mb-6">Nuevo cliente</h1>
+ 
+    <div class="bg-white rounded-lg p-6">
+        <form method="post" class="flex flex-col gap-4">
+            {% csrf_token %}
+ 
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Nombre *</label>
+                <input type="text" name="nombre" required autofocus
+                       class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+            </div>
+ 
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Teléfono</label>
+                <input type="text" name="telefono"
+                       class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+            </div>
+ 
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Email</label>
+                <input type="email" name="email"
+                       class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+            </div>
+ 
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Plan *</label>
+                <select name="plan" required
+                        class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+                    {% for plan in planes %}
+                        <option value="{{ plan.id }}">{{ plan.nombre }} — ${{ plan.precio }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+ 
+            <button type="submit"
+                    class="bg-[#d4f04a] text-[#111] font-bold uppercase tracking-widest py-3 rounded hover:bg-[#c2e038] transition text-sm mt-2">
+                Guardar cliente
+            </button>
+        </form>
+    </div>
+ 
+    <a href="{% url 'dashboard' %}" class="block text-center mt-4 text-xs uppercase tracking-widest text-gray-400 hover:text-gray-600 transition">
+        Cancelar
+    </a>
+</div>
+ 
+{% endblock %}

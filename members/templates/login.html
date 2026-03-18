@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GimPro — Ingresar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Barlow', sans-serif; }
+        .font-condensed { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.05em; }
+    </style>
+</head>
+<body class="bg-[#111] min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-sm">
+        <h1 class="font-condensed text-5xl font-bold uppercase text-white tracking-widest text-center mb-1">
+            GIM<span class="text-[#d4f04a]">PRO</span>
+        </h1>
+        <p class="text-center text-gray-500 text-xs uppercase tracking-widest mb-8">Panel de gestión</p>
+
+        <div class="bg-white rounded-lg p-7">
+            <form method="post" class="flex flex-col gap-4">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                    <p class="text-red-500 text-xs font-bold uppercase tracking-widest text-center">
+                        Usuario o contraseña incorrectos
+                    </p>
+                {% endif %}
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Usuario</label>
+                    <input type="text" name="username" autofocus required
+                           class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Contraseña</label>
+                    <input type="password" name="password" required
+                           class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4f04a]">
+                </div>
+
+                <button type="submit"
+                        class="bg-[#d4f04a] text-[#111] font-bold uppercase tracking-widest py-3 rounded hover:bg-[#c2e038] transition text-sm mt-1">
+                    Ingresar
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
