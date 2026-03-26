@@ -4,23 +4,35 @@ from .models import Cliente, Plan, Pago
 
 
 def dashboard(request):
-    clientes = Cliente.objects.filter(activo=True).select_related('plan')
+    # 1. Obtenemos todos los clientes activos para el resumen
+    clientes_base = Cliente.objects.filter(activo=True).select_related('plan')
+    
+    # 2. Capturamos la búsqueda
+    busqueda = request.GET.get('q', '')
+    
+    # 3. Filtramos para la tabla si hay búsqueda
+    clientes_filtrados = clientes_base
+    if busqueda:
+        clientes_filtrados = clientes_base.filter(nombre__icontains=busqueda)
 
+    # 4. Ordenamos los resultados filtrados
     orden = {"vencido": 0, "por_vencer": 1, "sin_pago": 2, "al_dia": 3}
-    clientes_ordenados = sorted(clientes, key=lambda c: orden[c.estado()])
+    clientes_ordenados = sorted(clientes_filtrados, key=lambda c: orden.get(c.estado(), 4))
 
+    # 5. El resumen se mantiene sobre el total (clientes_base) 
+    # para que no desaparezcan las estadísticas globales al buscar
     resumen = {
-        "vencidos":   sum(1 for c in clientes if c.estado() == "vencido"),
-        "por_vencer": sum(1 for c in clientes if c.estado() == "por_vencer"),
-        "al_dia":     sum(1 for c in clientes if c.estado() == "al_dia"),
-        "total":      clientes.count(),
+        "vencidos":   sum(1 for c in clientes_base if c.estado() == "vencido"),
+        "por_vencer": sum(1 for c in clientes_base if c.estado() == "por_vencer"),
+        "al_dia":     sum(1 for c in clientes_base if c.estado() == "al_dia"),
+        "total":      clientes_base.count(),
     }
 
     return render(request, "dashboard.html", {
         "clientes": clientes_ordenados,
         "resumen": resumen,
+        "busqueda": busqueda, # Pasamos la búsqueda para mantenerla en el input
     })
-
 
 def registrar_pago(request, cliente_id):
     cliente = get_object_or_404(Cliente, pk=cliente_id)
