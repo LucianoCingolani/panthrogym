@@ -69,7 +69,7 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-            {% for cliente in clientes %}
+            {% for cliente in page_obj %}
             <tr class="hover:bg-[#f7f6f1] transition">
                 <td class="px-5 py-3 font-semibold text-[#111]"><a href="{% url 'historial_pagos' cliente.id %}" class="hover:text-[#555] transition">{{ cliente.nombre }}</a></td>
                 <td class="px-5 py-3 text-gray-500">{{ cliente.plan.nombre }}</td>
