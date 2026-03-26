@@ -1,37 +1,37 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import Cliente, Plan, Pago
+from django.core.paginator import Paginator
 
 
 def dashboard(request):
-    # 1. Obtenemos todos los clientes activos para el resumen
     clientes_base = Cliente.objects.filter(activo=True).select_related('plan')
     
-    # 2. Capturamos la búsqueda
     busqueda = request.GET.get('q', '')
-    
-    # 3. Filtramos para la tabla si hay búsqueda
-    clientes_filtrados = clientes_base
     if busqueda:
-        clientes_filtrados = clientes_base.filter(nombre__icontains=busqueda)
+        clientes_base = clientes_base.filter(nombre__icontains=busqueda)
 
-    # 4. Ordenamos los resultados filtrados
+    # Orden lógico
     orden = {"vencido": 0, "por_vencer": 1, "sin_pago": 2, "al_dia": 3}
-    clientes_ordenados = sorted(clientes_filtrados, key=lambda c: orden.get(c.estado(), 4))
+    clientes_ordenados = sorted(clientes_base, key=lambda c: orden.get(c.estado(), 4))
 
-    # 5. El resumen se mantiene sobre el total (clientes_base) 
-    # para que no desaparezcan las estadísticas globales al buscar
+    # --- Lógica de Paginación ---
+    paginator = Paginator(clientes_ordenados, 10) # 10 por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    # ----------------------------
+
     resumen = {
-        "vencidos":   sum(1 for c in clientes_base if c.estado() == "vencido"),
-        "por_vencer": sum(1 for c in clientes_base if c.estado() == "por_vencer"),
-        "al_dia":     sum(1 for c in clientes_base if c.estado() == "al_dia"),
-        "total":      clientes_base.count(),
+        "vencidos":   sum(1 for c in Cliente.objects.filter(activo=True) if c.estado() == "vencido"),
+        "por_vencer": sum(1 for c in Cliente.objects.filter(activo=True) if c.estado() == "por_vencer"),
+        "al_dia":     sum(1 for c in Cliente.objects.filter(activo=True) if c.estado() == "al_dia"),
+        "total":      Cliente.objects.filter(activo=True).count(),
     }
 
     return render(request, "dashboard.html", {
-        "clientes": clientes_ordenados,
+        "page_obj": page_obj, # Ahora pasamos el objeto paginado
         "resumen": resumen,
-        "busqueda": busqueda, # Pasamos la búsqueda para mantenerla en el input
+        "busqueda": busqueda,
     })
 
 def registrar_pago(request, cliente_id):
